@@ -1,0 +1,14 @@
+<section>
+  <div class="page-header"><div><p class="eyebrow">OPERACIONES DEL TALLER</p><h1>Órdenes de servicio</h1><p class="muted">Consulta órdenes registradas, revisa su detalle o anula una orden vigente.</p></div><a class="btn btn-primary" *appSiPermiso="'ORDEN_REGISTRAR'" routerLink="nueva">＋ Nueva orden</a></div>
+  <form class="card filters" (submit)="$event.preventDefault(); buscar()">
+    <label class="field">Placa<input class="input" [value]="placa()" (input)="placa.set($any($event.target).value)" placeholder="ABC-123"></label>
+    <label class="field">Estado<select class="input" [value]="estado()" (change)="estado.set($any($event.target).value)"><option value="">Todos</option><option value="REGISTRADA">Registrada</option><option value="ANULADA">Anulada</option></select></label>
+    <label class="field">Desde<input class="input" type="date" [value]="desde()" (input)="desde.set($any($event.target).value)"></label>
+    <label class="field">Hasta<input class="input" type="date" [value]="hasta()" (input)="hasta.set($any($event.target).value)"></label>
+    <div class="filter-actions"><button class="btn btn-primary" type="submit">Buscar</button><button class="btn" type="button" (click)="limpiar()">Limpiar</button></div>
+  </form>
+  @if(error()){<div class="alerta" role="alert">{{error()}}</div>}
+  @if(cargando()){<p role="status">Cargando órdenes…</p>}
+  @else if(ordenes().length===0){<div class="card empty"><h2>Sin resultados</h2><p>No hay órdenes que coincidan con los filtros seleccionados.</p></div>}
+  @else {<div class="table-wrap"><table class="tabla"><thead><tr><th>Número</th><th>Fecha</th><th>Vehículo</th><th>Kilometraje</th><th>Estado</th><th>Total</th><th>Acciones</th></tr></thead><tbody>@for(o of ordenes();track o.id){<tr><td><strong>{{o.numero}}</strong></td><td>{{o.fecha|date:'dd/MM/yyyy HH:mm'}}</td><td>{{o.placa}}</td><td>{{o.kilometraje|number}}</td><td><span class="badge" [class.inactivo]="o.estado==='ANULADA'">{{o.estado==='REGISTRADA'?'Registrada':'Anulada'}}</span></td><td>{{o.total|currency:'PEN':'symbol':'1.2-2'}}</td><td class="actions"><a class="btn" [routerLink]="[o.id]">Ver</a><button class="btn btn-peligro" *appSiPermiso="'ORDEN_ANULAR'" type="button" (click)="anular(o)" [disabled]="o.estado!=='REGISTRADA'">Anular</button></td></tr>}</tbody></table></div>}
+</section>

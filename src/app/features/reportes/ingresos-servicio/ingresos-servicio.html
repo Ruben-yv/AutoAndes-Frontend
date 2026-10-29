@@ -1,0 +1,15 @@
+<section>
+  <div class="page-header"><div><p class="eyebrow">ANÁLISIS DEL TALLER</p><h1>Ingresos por servicio</h1><p class="muted">Consulta cantidades atendidas e ingresos generados dentro de un periodo.</p></div><button class="btn no-imprimir" type="button" (click)="imprimir()" [disabled]="!consultado()||cargando()">Imprimir reporte</button></div>
+  <form class="card filters no-imprimir" (submit)="$event.preventDefault(); buscar()">
+    <label class="field">Desde<input class="input" type="date" [ngModel]="desde()" (ngModelChange)="desde.set($event)" name="desde"></label>
+    <label class="field">Hasta<input class="input" type="date" [ngModel]="hasta()" (ngModelChange)="hasta.set($event)" name="hasta"></label>
+    <button class="btn btn-primary" type="submit" [disabled]="cargando()">{{cargando()?'Consultando…':'Consultar'}}</button>
+  </form>
+  @if(error()){<div class="alerta" role="alert">{{error()}}</div>}
+  @if(cargando()){<p role="status">Calculando ingresos…</p>}
+  @else if(consultado()&&filas().length===0){<div class="card empty"><h2>Sin ingresos para el periodo</h2><p>Prueba con otro rango de fechas o registra órdenes finalizadas según las reglas del sistema.</p></div>}
+  @else if(filas().length>0){
+    <div class="card report-heading solo-impresion"><p>AutoAndes · Reporte de ingresos por servicio</p><p>Periodo: {{desde()}} al {{hasta()}}</p></div>
+    <div class="table-wrap"><table class="tabla"><thead><tr><th>Código</th><th>Servicio</th><th>Cantidad total</th><th>Importe total</th></tr></thead><tbody>@for(f of filas();track f.codigo){<tr><td>{{f.codigo}}</td><td>{{f.servicio}}</td><td>{{f.cantidadTotal}}</td><td>{{f.importeTotal|currency:'PEN':'symbol':'1.2-2'}}</td></tr>}</tbody><tfoot><tr class="total-row"><td colspan="3">Ingresos del periodo</td><td>{{totalIngresos()|currency:'PEN':'symbol':'1.2-2'}}</td></tr></tfoot></table></div>
+  }
+</section>

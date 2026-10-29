@@ -1,0 +1,10 @@
+<section>
+  <div class="page-header"><div><p class="eyebrow">CLIENTES Y UNIDADES</p><h1>Vehículos</h1></div><a class="btn btn-primary" routerLink="nuevo" *appSiPermiso="'VEHICULO_ESCRIBIR'">＋ Nuevo vehículo</a></div>
+  @if (error()) { <div class="alerta error-inline" role="alert">{{ error() }}</div> }
+  <div class="filters"><label for="cliente-filter">Filtrar por cliente</label><select id="cliente-filter" class="input" [value]="clienteId() ?? ''" (change)="filtrar($any($event.target).value)"><option value="">Todos los clientes</option>@for(cliente of clientes();track cliente.id){<option [value]="cliente.id">{{cliente.nombres}} · {{cliente.documento}}</option>}</select></div>
+  @if (cargando()) { <p>Cargando vehículos…</p> }
+  @else if (vehiculos().length === 0) { <section class="card empty">No hay vehículos para este filtro.</section> }
+  @else { <div class="table-wrap"><table class="tabla"><thead><tr><th>Placa</th><th>Marca</th><th>Modelo</th><th>Año</th><th>Cliente</th><th>Acciones</th></tr></thead><tbody>
+    @for(v of vehiculos();track v.id){<tr><td><b>{{v.placa}}</b></td><td>{{v.marca}}</td><td>{{v.modelo}}</td><td>{{v.anio}}</td><td>{{v.clienteNombre}}</td><td><a class="btn" [routerLink]="[v.id,'editar']" *appSiPermiso="'VEHICULO_ESCRIBIR'">Editar</a> <button class="btn btn-peligro" (click)="eliminar(v)" *appSiPermiso="'VEHICULO_ESCRIBIR'">Eliminar</button></td></tr>}
+  </tbody></table></div>}
+</section>

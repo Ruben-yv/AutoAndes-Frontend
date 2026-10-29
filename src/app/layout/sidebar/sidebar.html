@@ -1,0 +1,1 @@
+<nav class="sidebar"><p class="title">Módulos</p>@for(item of menu();track item.ruta){<a [routerLink]="item.ruta" routerLinkActive="active" [routerLinkActiveOptions]="{exact:item.ruta==='/inicio'}"><span>{{item.icono}}</span>{{item.etiqueta}}</a>}</nav>

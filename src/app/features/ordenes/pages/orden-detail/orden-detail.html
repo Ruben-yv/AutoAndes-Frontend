@@ -1,0 +1,15 @@
+<section class="card">
+  <div class="page-header"><div><p class="eyebrow">DETALLE DE LA OPERACIÓN</p><h1>Orden de servicio</h1></div><a class="btn" routerLink="/ordenes">Volver a órdenes</a></div>
+  @if(cargando()){<p role="status">Cargando detalle…</p>}
+  @if(error()){<div class="alerta" role="alert">{{error()}}</div>}
+  @if(orden();as o){
+    <div class="order-summary">
+      <div><span>Número</span><strong>{{o.numero}}</strong></div><div><span>Fecha</span><strong>{{o.fecha|date:'dd/MM/yyyy HH:mm'}}</strong></div>
+      <div><span>Vehículo</span><strong>{{o.placa}}</strong></div><div><span>Kilometraje</span><strong>{{o.kilometraje|number}}</strong></div>
+      <div><span>Estado</span><strong>{{o.estado==='REGISTRADA'?'Registrada':'Anulada'}}</strong></div><div><span>Registrada por</span><strong>{{o.usuarioRegistro}}</strong></div>
+    </div>
+    <h2>Servicios incluidos</h2>
+    <div class="table-wrap"><table class="tabla"><thead><tr><th>Código</th><th>Servicio</th><th>Cantidad</th><th>Precio unitario</th><th>Subtotal</th></tr></thead><tbody>@for(d of o.detalles;track d.id){<tr><td>{{d.servicioCodigo}}</td><td>{{d.servicioNombre}}</td><td>{{d.cantidad}}</td><td>{{d.precioUnitario|currency:'PEN':'symbol':'1.2-2'}}</td><td>{{d.subtotal|currency:'PEN':'symbol':'1.2-2'}}</td></tr>}</tbody><tfoot><tr><th colspan="4" class="total-label">Total</th><th>{{o.total|currency:'PEN':'symbol':'1.2-2'}}</th></tr></tfoot></table></div>
+    @if(o.motivoAnulacion){<div class="alerta motivo"><strong>Motivo de anulación:</strong> {{o.motivoAnulacion}}</div>}
+  }
+</section>

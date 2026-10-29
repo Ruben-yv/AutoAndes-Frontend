@@ -1,0 +1,17 @@
+<section class="card">
+  <div class="page-header"><div><p class="eyebrow">CLIENTES Y UNIDADES</p><h1>{{id()?'Editar vehículo':'Nuevo vehículo'}}</h1></div><a class="btn" routerLink="/vehiculos">Volver</a></div>
+  @if(cargando()){<p>Cargando datos…</p>}
+  @if(error()){<div class="alerta" role="alert">{{error()}}</div>}
+  @if(!cargando()){
+    <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+      <div class="form-grid">
+        <label class="field">Placa<input class="input" formControlName="placa" placeholder="ABC-123" maxlength="7">@if(form.controls.placa.touched&&form.controls.placa.invalid){<small class="field-error">La placa debe tener el formato ABC-123.</small>}@else if(servidor('placa')){<small class="field-error">{{servidor('placa')}}</small>}</label>
+        <label class="field">Marca<input class="input" formControlName="marca" maxlength="40">@if(form.controls.marca.touched&&form.controls.marca.invalid){<small class="field-error">La marca es obligatoria (máximo 40 caracteres).</small>}@else if(servidor('marca')){<small class="field-error">{{servidor('marca')}}</small>}</label>
+        <label class="field">Modelo<input class="input" formControlName="modelo" maxlength="40">@if(form.controls.modelo.touched&&form.controls.modelo.invalid){<small class="field-error">El modelo es obligatorio (máximo 40 caracteres).</small>}@else if(servidor('modelo')){<small class="field-error">{{servidor('modelo')}}</small>}</label>
+        <label class="field">Año<input class="input" type="number" min="1990" max="2027" formControlName="anio">@if(form.controls.anio.touched&&form.controls.anio.invalid){<small class="field-error">El año debe estar entre 1990 y 2027.</small>}@else if(servidor('anio')){<small class="field-error">{{servidor('anio')}}</small>}</label>
+        <label class="field">Cliente<select class="input" formControlName="clienteId"><option [ngValue]="0" disabled>Selecciona un cliente</option>@for(c of clientes();track c.id){<option [ngValue]="c.id">{{c.nombres}} · {{c.documento}}</option>}</select>@if(form.controls.clienteId.touched&&form.controls.clienteId.invalid){<small class="field-error">Selecciona un cliente.</small>}@else if(servidor('clienteId')){<small class="field-error">{{servidor('clienteId')}}</small>}</label>
+      </div>
+      <div class="form-actions"><button class="btn btn-primary" type="submit" [disabled]="guardando()">{{guardando()?'Guardando…':'Guardar vehículo'}}</button><a class="btn" routerLink="/vehiculos">Cancelar</a></div>
+    </form>
+  }
+</section>

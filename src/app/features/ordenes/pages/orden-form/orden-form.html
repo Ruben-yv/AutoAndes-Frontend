@@ -1,0 +1,31 @@
+<section class="card">
+  <div class="page-header"><div><p class="eyebrow">ATENCIÓN DEL TALLER</p><h1>Nueva orden de servicio</h1></div><a class="btn" routerLink="/ordenes">Volver</a></div>
+  @if(error()){<div class="alerta" role="alert">{{error()}}</div>}
+  @if(exito();as creada){<div class="success" role="status">Orden <b>{{creada.numero}}</b> registrada correctamente. <a [routerLink]="['/ordenes',creada.id]">Ver detalle</a></div>}
+  @if(cargando()){<p>Cargando vehículos y servicios…</p>}
+  @else if(vehiculos().length===0){<div class="alerta">No hay vehículos cargados. Registra uno antes de crear una orden.</div>}
+  @else if(servicios().length===0){<div class="alerta">No hay servicios activos disponibles para una orden.</div>}
+  @else {
+    <form [formGroup]="form" (ngSubmit)="registrar()" novalidate>
+      <div class="form-grid">
+        <label class="field">Vehículo<select class="input" formControlName="vehiculoId"><option [ngValue]="0" disabled>Selecciona placa y cliente</option>@for(v of vehiculos();track v.id){<option [ngValue]="v.id">{{v.placa}} · {{v.marca}} {{v.modelo}} — {{v.clienteNombre}}</option>}</select>@if(form.controls.vehiculoId.touched&&form.controls.vehiculoId.invalid){<small class="field-error">Selecciona un vehículo.</small>}</label>
+        <label class="field">Kilometraje<input class="input" type="number" min="0" max="9999999" formControlName="kilometraje">@if(form.controls.kilometraje.touched&&form.controls.kilometraje.invalid){<small class="field-error">Ingresa un kilometraje válido.</small>}</label>
+      </div>
+      <div class="page-header" style="margin-top:24px"><h2>Servicios de la orden</h2><button class="btn" type="button" (click)="agregarLinea()" [disabled]="detalles.length>=10">＋ Agregar línea</button></div>
+      <div formArrayName="detalles">
+        @for(linea of detalles.controls;track $index;let i=$index){
+          <div class="detail-line" [formGroupName]="i">
+            <label class="field service-select">Servicio<select class="input" formControlName="servicioId"><option [ngValue]="0" disabled>Selecciona servicio</option>@for(s of opcionesPara(i);track s.id){<option [ngValue]="s.id">{{s.codigo}} · {{s.nombre}} ({{s.precio|currency:'PEN':'symbol':'1.2-2'}})</option>}</select>@if(linea.get('servicioId')?.touched&&linea.get('servicioId')?.invalid){<small class="field-error">Selecciona un servicio.</small>}</label>
+            <label class="field">Cantidad<input class="input" type="number" min="1" max="5" formControlName="cantidad"></label>
+            <div><small>Precio</small><div>{{(servicioDe(i)?.precio??0)|currency:'PEN':'symbol':'1.2-2'}}</div></div>
+            <div><small>Subtotal</small><div><b>{{subtotal(i)|currency:'PEN':'symbol':'1.2-2'}}</b></div></div>
+            <button type="button" class="btn btn-peligro" (click)="quitarLinea(i)" [disabled]="detalles.length<=1" aria-label="Quitar servicio">×</button>
+          </div>
+        }
+      </div>
+      @if(servicioDuplicado){<p class="field-error">No repitas un servicio en la misma orden.</p>}
+      <p class="total">Total: {{total|currency:'PEN':'symbol':'1.2-2'}}</p>
+      <div class="form-actions"><button class="btn btn-primary" type="submit" [disabled]="guardando()||form.invalid||servicioDuplicado">{{guardando()?'Registrando…':'Registrar orden'}}</button><a class="btn" routerLink="/ordenes">Cancelar</a></div>
+    </form>
+  }
+</section>

@@ -1,0 +1,24 @@
+<section class="card">
+  <div class="page-header"><div><p class="eyebrow">CATÁLOGO DEL TALLER</p><h1>{{ id() ? 'Editar servicio' : 'Nuevo servicio' }}</h1></div><a class="btn" routerLink="/servicios">Volver</a></div>
+  @if (cargando()) { <p>Cargando servicio…</p> }
+  @if (error()) { <div class="alerta" role="alert">{{ error() }}</div> }
+  @if (!cargando()) {
+    <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+      <div class="form-grid">
+        <label class="field">Código<input class="input" formControlName="codigo" placeholder="SRV-009" maxlength="7">
+          @if (form.controls.codigo.touched && form.controls.codigo.invalid) { <small class="field-error">Usa el formato SRV-000.</small> } @else if (servidor('codigo')) { <small class="field-error">{{ servidor('codigo') }}</small> }
+        </label>
+        <label class="field">Nombre<input class="input" formControlName="nombre" maxlength="80">
+          @if (form.controls.nombre.touched && form.controls.nombre.invalid) { <small class="field-error">El nombre es obligatorio y debe tener entre 3 y 80 caracteres.</small> } @else if (servidor('nombre')) { <small class="field-error">{{ servidor('nombre') }}</small> }
+        </label>
+        <label class="field">Precio (S/)<input class="input" type="number" min="0.01" step="0.01" formControlName="precio">
+          @if (form.controls.precio.touched && form.controls.precio.invalid) { <small class="field-error">Ingresa un precio mayor que cero.</small> } @else if (servidor('precio')) { <small class="field-error">{{ servidor('precio') }}</small> }
+        </label>
+        <label class="field">Duración (minutos)<input class="input" type="number" min="15" max="480" formControlName="duracionMin">
+          @if (form.controls.duracionMin.touched && form.controls.duracionMin.invalid) { <small class="field-error">La duración debe estar entre 15 y 480 minutos.</small> } @else if (servidor('duracionMin')) { <small class="field-error">{{ servidor('duracionMin') }}</small> }
+        </label>
+      </div>
+      <div class="form-actions"><button class="btn btn-primary" type="submit" [disabled]="guardando()">{{ guardando() ? 'Guardando…' : 'Guardar servicio' }}</button><a class="btn" routerLink="/servicios">Cancelar</a></div>
+    </form>
+  }
+</section>
