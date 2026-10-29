@@ -1,0 +1,1 @@
+function e(r){return r.status===0?`No se pudo conectar con AutoAndes API. Comprueba que el backend esté iniciado y que CORS permita http://localhost:4200.`:r.error?.mensaje??`Error ${r.status}: ${r.statusText}`}function t(r){return r.error?.campos??{}}export{t as n,e as t};
